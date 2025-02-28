@@ -38,11 +38,11 @@ public class ProjectConfig {
     public UserDetailsService uds(){
          var uds = new InMemoryUserDetailsManager();
 
-         uds.createUser(User.withUsername("user").password("password").authorities("Read").roles("USER").build());
+         uds.createUser(User.withUsername("user").password("password").authorities("Read","ROLE_USER").build());
         var admin = User.withUsername("admin")
                 .password("password")
-                .authorities("Read", "Write") // Add authorities
-                .roles("ADMIN") // Add roles (automatically prefixed with "ROLE_")
+                .authorities("Read", "Write","ROLE_ADMIN") // Add authorities
+                 // Add roles (automatically prefixed with "ROLE_")
                 .build();
         uds.createUser(admin);
         System.out.println("Admin Authorities: " + admin.getAuthorities()); // Log authorities

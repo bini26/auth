@@ -23,7 +23,17 @@ public class TestController {
         return a;
     }
 
+
+    @GetMapping("/test1")
+    @PreAuthorize("hasAuthority('Read')")
+    public String testing(){
+return " testing for the read authority";
+    }
+
 }
+
+
+
 
 
 //for opaque token the post request is
