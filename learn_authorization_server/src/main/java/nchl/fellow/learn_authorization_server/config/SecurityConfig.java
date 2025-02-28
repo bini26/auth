@@ -28,7 +28,13 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 public class SecurityConfig {
@@ -108,13 +114,95 @@ public class SecurityConfig {
         return AuthorizationServerSettings.builder().build();
     }
 
+//    @Bean
+//    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+//        return context -> {
+//            JwtClaimsSet.Builder claims = context.getClaims();
+//            claims.claim("priority", "HIGH");
+//            Set<String> authorities = context.getPrincipal().getAuthorities()
+//                    .stream()
+//                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+//                    .collect(Collectors.toSet());
+//
+//            context.getClaims().claim("roles", authorities);
+//        };
+
+//    @Bean
+//    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+//        return context -> {
+//            // Extract roles and authorities from the user
+//            Set<String> roles = context.getPrincipal().getAuthorities()
+//                    .stream()
+//                    .filter(grantedAuthority -> grantedAuthority.getAuthority().startsWith("ROLE_"))
+//                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+//                    .collect(Collectors.toSet());
+//
+//            Set<String> authorities = context.getPrincipal().getAuthorities()
+//                    .stream()
+//                    .filter(grantedAuthority -> !grantedAuthority.getAuthority().startsWith("ROLE_"))
+//                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+//                    .collect(Collectors.toSet());
+//
+//            // Add custom claims to the JWT
+//            context.getClaims().claim("roles", roles); // Add roles
+//            context.getClaims().claim("authorities", authorities); // Add authorities
+//            context.getClaims().claim("priority", "HIGH"); // Add priority (example)
+//        };
+
+
+//    @Bean
+//    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+//        return context -> {
+//            // Extract roles and authorities from the user
+//            Set<String> roles = context.getPrincipal().getAuthorities()
+//                    .stream()
+//                    .filter(grantedAuthority -> grantedAuthority.getAuthority().startsWith("ROLE_"))
+//                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+//                    .collect(Collectors.toSet());
+//
+//            Set<String> authorities = context.getPrincipal().getAuthorities()
+//                    .stream()
+//                    .filter(grantedAuthority -> !grantedAuthority.getAuthority().startsWith("ROLE_"))
+//                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+//                    .collect(Collectors.toSet());
+//
+//            // Add custom claims to the JWT
+//            context.getClaims().claim("roles", roles); // Add roles
+//            context.getClaims().claim("authorities", authorities); // Add authorities
+//            context.getClaims().claim("priority", "HIGH"); // Add priority (example)
+//        };
+//    }
+
+
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
         return context -> {
-            JwtClaimsSet.Builder claims = context.getClaims();
-            claims.claim("priority", "HIGH");
-        };
+            // Log the principal's authorities
+            Logger logger = LoggerFactory.getLogger(OAuth2TokenCustomizer.class);
+            logger.info("Principal Authorities: {}", context.getPrincipal().getAuthorities());
 
+            // Extract roles and authorities from the user
+            Set<String> roles = context.getPrincipal().getAuthorities()
+                    .stream()
+                    .filter(grantedAuthority -> grantedAuthority.getAuthority().startsWith("ROLE_"))
+                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+                    .collect(Collectors.toSet());
+
+            Set<String> authorities = context.getPrincipal().getAuthorities()
+                    .stream()
+                    .filter(grantedAuthority -> !grantedAuthority.getAuthority().startsWith("ROLE_"))
+                    .map(grantedAuthority -> grantedAuthority.getAuthority())
+                    .collect(Collectors.toSet());
+
+            // Log the extracted roles and authorities
+            logger.info("Extracted Roles: {}", roles);
+            logger.info("Extracted Authorities: {}", authorities);
+
+            // Add custom claims to the JWT
+            context.getClaims().claim("roles", roles); // Add roles
+            context.getClaims().claim("authorities", authorities); // Add authorities
+            context.getClaims().claim("priority", "HIGH"); // Add priority (example)
+        };
     }
 
 }

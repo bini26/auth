@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("/test")
-    @PreAuthorize("hasAuthority('Write')")
+    @PreAuthorize("hasRole('ADMIN')")
     //@RolesAllowed("User")
     public String test(){
         return "test controller";

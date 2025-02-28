@@ -39,11 +39,17 @@ public class ProjectConfig {
          var uds = new InMemoryUserDetailsManager();
 
          uds.createUser(User.withUsername("user").password("password").authorities("Read").roles("USER").build());
-         uds.createUser(User.withUsername("admin")
-                 .password("password").authorities("Read","Write")
-                 .roles("ADMIN").build());
+        var admin = User.withUsername("admin")
+                .password("password")
+                .authorities("Read", "Write") // Add authorities
+                .roles("ADMIN") // Add roles (automatically prefixed with "ROLE_")
+                .build();
+        uds.createUser(admin);
+        System.out.println("Admin Authorities: " + admin.getAuthorities()); // Log authorities
 
         return uds;
+
+
     }
 
     @Bean
