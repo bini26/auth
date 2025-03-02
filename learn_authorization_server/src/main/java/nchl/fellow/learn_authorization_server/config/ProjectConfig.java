@@ -67,8 +67,15 @@ public class ProjectConfig {
               // .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 //.scope("CUSTOM")
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)//grant type for refresh token
                 .scope(OidcScopes.OPENID)
+                .scope("read")
+                .scope("write")
                 .redirectUri("https://www.manning.com/authorized")
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(Duration.ofMinutes(5))// access token expires in 5minute
+                        .refreshTokenTimeToLive(Duration.ofHours(24))//referesh token is expires in 24hrs
+                        .build())
                 .build();
 
         return new InMemoryRegisteredClientRepository(registeredClient);
