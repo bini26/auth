@@ -177,11 +177,7 @@ public class SecurityConfig {
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
         return context -> {
-            // Log the principal's authorities
-            Logger logger = LoggerFactory.getLogger(OAuth2TokenCustomizer.class);
-            logger.info("Principal Authorities: {}", context.getPrincipal().getAuthorities());
 
-            // Extract roles and authorities from the user
             Set<String> roles = context.getPrincipal().getAuthorities()
                     .stream()
                     .filter(grantedAuthority -> grantedAuthority.getAuthority().startsWith("ROLE_"))
@@ -194,14 +190,9 @@ public class SecurityConfig {
                     .map(grantedAuthority -> grantedAuthority.getAuthority())
                     .collect(Collectors.toSet());
 
-            // Log the extracted roles and authorities
-            logger.info("Extracted Roles: {}", roles);
-            logger.info("Extracted Authorities: {}", authorities);
-
-            // Add custom claims to the JWT
-            context.getClaims().claim("roles", roles); // Add roles
-            context.getClaims().claim("authorities", authorities); // Add authorities
-            context.getClaims().claim("priority", "HIGH"); // Add priority (example)
+            context.getClaims().claim("roles", roles);
+            context.getClaims().claim("authorities", authorities);
+            context.getClaims().claim("priority", "HIGH");
         };
     }
 
