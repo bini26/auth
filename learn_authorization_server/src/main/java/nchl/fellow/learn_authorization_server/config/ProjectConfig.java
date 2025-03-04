@@ -39,14 +39,15 @@ public class ProjectConfig {
          var uds = new InMemoryUserDetailsManager();
 
          uds.createUser(User.withUsername("user").password("password").authorities("Read","ROLE_USER").build());
+        uds.createUser(User.withUsername("user1").password("password").authorities("Read","ROLE_USER","WRITE").build());
+        uds.createUser(User.withUsername("user2").password("password").authorities("Read","ROLE_USER","EDIT").build());
+        uds.createUser(User.withUsername("admin1").password("password").authorities("Read","ROLE_Admin","WRITE","EDIT","DELETE").build());
+
         var admin = User.withUsername("admin")
                 .password("password")
-                .authorities("Read", "Write","ROLE_ADMIN") // Add authorities
-                 // Add roles (automatically prefixed with "ROLE_")
+                .authorities("Read", "Write","ROLE_ADMIN")
                 .build();
         uds.createUser(admin);
-        System.out.println("Admin Authorities: " + admin.getAuthorities()); // Log authorities
-
         return uds;
 
 

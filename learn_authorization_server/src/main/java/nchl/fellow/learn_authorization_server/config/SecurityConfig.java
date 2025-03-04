@@ -13,6 +13,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
@@ -28,6 +30,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -193,7 +196,24 @@ public class SecurityConfig {
             context.getClaims().claim("roles", roles);
             context.getClaims().claim("authorities", authorities);
             context.getClaims().claim("priority", "HIGH");
+
+            List<String> audience = determineAudienceforUser(context.getPrincipal());
+            context.getClaims().audience(audience);
+
         };
     }
+
+    private List<String> determineAudienceforUser(Authentication principle){
+        if(principle.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+            return List.of("resource-server-1", "resource-server-2","resource-server-4","resource-server-3","resource-server-5");
+
+        }
+        else{
+            return List.of("resource-server-1", "resource-server-2","resource-server-4");
+
+
+        }
+    }
+
 
 }

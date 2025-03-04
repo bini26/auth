@@ -53,87 +53,6 @@ public class ProjectConfig {
         return http.build();
 
     }
-//}
-
-
-// URL for the authorization code
-// http://localhost:8080/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=https://www.manning.com/authorized&code_challenge=QYPAZ5NU8yvtlQ9erXrUYR-T5AGCjCF47vN-KsaI2A8&code_challenge_method=S256
-
-// Url for openid datas
-//http://localhost:8001/.well-known/openid-configuration
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-//            throws Exception {
-//        http.oauth2ResourceServer(
-//                c -> c.opaqueToken(
-//                        o -> o.introspectionUri(introspectionUri)
-//                                .introspectionClientCredentials(
-//                                        resourceServerClientID,
-//                                        resourceServerSecret)
-//                )
-//        );
-//        http.authorizeHttpRequests(c->c.anyRequest().authenticated());
-//        return http.build();
-//    }
-
-//    @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//
-//        // Create a converter to map the roles or authorities claim from the JWT
-//        JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//        authoritiesConverter.setAuthorityPrefix("ROLE_"); // Prefix for role-based authorities (Spring Security convention)
-//        authoritiesConverter.setAuthoritiesClaimName("roles"); // Name of the claim in the JWT (adjust as needed)
-//
-//        // Set the authorities converter
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
-//
-//        return jwtAuthenticationConverter;
-//    }
-
-//    @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//
-//        // Create a custom converter to map roles, authorities, and priority
-//        Converter<Jwt, Collection<GrantedAuthority>> customAuthoritiesConverter = jwt -> {
-//            Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-//
-//            // Extract roles
-//            List<String> roles = jwt.getClaimAsStringList("roles");
-//            if (roles != null) {
-//                grantedAuthorities.addAll(
-//                        roles.stream()
-//                                .map(role -> new SimpleGrantedAuthority(role))
-//                                .collect(Collectors.toList())
-//                );
-//            }
-//
-//            // Extract authorities
-//            List<String> authorities = jwt.getClaimAsStringList("authorities");
-//            if (authorities != null) {
-//                grantedAuthorities.addAll(
-//                        authorities.stream()
-//                                .map(authority -> new SimpleGrantedAuthority(authority))
-//                                .collect(Collectors.toList())
-//                );
-//            }
-//
-//            // Extract priority (optional, if needed as an authority)
-//            String priority = jwt.getClaimAsString("priority");
-//            if (priority != null) {
-//                grantedAuthorities.add(new SimpleGrantedAuthority("PRIORITY_" + priority));
-//            }
-//
-//            return grantedAuthorities;
-//        };
-//
-//        // Set the custom converter
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(customAuthoritiesConverter);
-//
-//        return jwtAuthenticationConverter;
-//    }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -170,11 +89,9 @@ public class ProjectConfig {
             }
 
             List<String> audience = jwt.getAudience();
-            System.out.println(audience);
-            if(audience ==null || !audience.contains("resource-server-1")){
+            if(audience == null || !audience.contains("resource-server-4")){
                 throw new IllegalArgumentException("Invalid Audience");
             }
-
             return grantedAuthorities;
         };
 
