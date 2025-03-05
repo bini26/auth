@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("/test")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     //@RolesAllowed("User")
     public String test(){
-        return "test controller";
+
+        return "testing controller for any role";
     }
 
 
     @GetMapping("/demo")
+    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasAuthority('EDIT')")
     public Authentication demo(Authentication a) {
         return a;
     }
@@ -28,6 +31,12 @@ public class TestController {
     @PreAuthorize("hasAuthority('Read')")
     public String testing(){
 return " testing for the read authority";
+    }
+
+    @GetMapping("/test2")
+    @PreAuthorize("hasAnyAuthority('Read','WRITE','DELETE','EDIT')")
+    public String test1(){
+        return " testing for any authority";
     }
 
 }

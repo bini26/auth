@@ -1,5 +1,6 @@
 package nchl.fellow.learn_resource_server.config;
 
+import nchl.fellow.learn_resource_server.service.TokenBlacklistService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.OAuth2Error;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
@@ -182,5 +186,25 @@ public class ProjectConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(customAuthoritiesConverter);
 
         return jwtAuthenticationConverter;
+    }
+
+    private static class BlacklistedTokenValidator implements OAuth2TokenValidator<Jwt> {
+
+        private final TokenBlacklistService service;
+
+        private BlacklistedTokenValidator(TokenBlacklistService service) {
+            this.service = service;
+        }
+
+        public OAuth2TokenValidatorResult validate(Jwt jwt) {
+            if(service.isAccessTokenRevoked(jwt.getTokenValue())){
+                return OAuth2TokenValidatorResult.failure(new OAuth2Error(
+                        "invalid_token",
+                        "The token is blacklisted",
+                        null
+                ));
+            }
+            return OAuth2TokenValidatorResult.success();
+        }
     }
 }

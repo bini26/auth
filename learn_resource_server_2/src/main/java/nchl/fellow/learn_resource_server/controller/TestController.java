@@ -19,6 +19,7 @@ public class TestController {
 
 
     @GetMapping("/demo")
+    @PreAuthorize("hasAuthority('Edit')")
     public Authentication demo(Authentication a) {
         return a;
     }

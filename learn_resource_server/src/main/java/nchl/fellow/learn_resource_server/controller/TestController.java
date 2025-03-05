@@ -19,6 +19,7 @@ public class TestController {
 
 
     @GetMapping("/demo")
+    @PreAuthorize("hasAuthority('EDIT')")
     public Authentication demo(Authentication a) {
         return a;
     }
@@ -28,6 +29,12 @@ public class TestController {
     @PreAuthorize("hasAuthority('Read')")
     public String testing(){
 return " testing for the read authority";
+    }
+
+    @GetMapping("/test2")
+    @PreAuthorize("hasAnyAuthority('Read','DELETE','EDIT')")
+    public String test1(){
+        return " testing for Any Authority";
     }
 
 }
